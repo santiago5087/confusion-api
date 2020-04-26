@@ -9,7 +9,7 @@ var Comment = require('../models/comments').model;
 dishRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req, res, next) => {
-    Dish.find({})
+    Dish.find(req.query)
     .populate('comments.author')
     .then((dishes) => {
         res.statusCode = 200;

@@ -16,12 +16,13 @@ mongoose.connect(url).then((db) => {
   console.log('Connected correctly to the server');
 }, (err) => console.log(err));
 
-var indexRouter = require('./routes/index');
-var userRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const userRouter = require('./routes/users');
 const dishRouter = require('./routes/dishRouter');
 const promoRouter = require('./routes/promoRouter');
 const leaderRouter = require('./routes/leaderRouter');
 const uploadRouter = require('./routes/uploadRouter');
+const favoriteRouter = require('./routes/favoriteRouter');
 
 var app = express();
 
@@ -80,6 +81,7 @@ app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
 app.use('/imageUpload', uploadRouter);
+app.use('/favorites', favoriteRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
