@@ -26,7 +26,7 @@ var server = http.createServer(app);
 
 var options = {
   key: fs.readFileSync(__dirname + '/server.key'),
-  cert: fs.readFileSync(__dirname + '/server.cert')
+  cert: fs.readFileSync(__dirname + '/server.crt')
 }
 
 /**

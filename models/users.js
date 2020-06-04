@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
-//El plugin añade automáticamente los atributos username y password, también adiciona otrs métodos
+//El plugin añade automáticamente los atributos username y password, también adiciona otros métodos
 var userSchema = new Schema({
     facebookId: String,
     firstname: {

@@ -1,14 +1,14 @@
 var express = require('express');
 var cors = require('cors');
 
-var whitelist = ['http://localhost:3000', 'https://localhost:3443', 'http://localhost:4200'];
+var whitelist = ['http://localhost:3000', 'https://localhost:3443', 'http://localhost:4200', 'https://www.facebook.com'];
 var corsOptionsDelegate = (req, callback) => {
     var corsOptions;
     console.log(req.header('origin'));
     if (whitelist.indexOf(req.header('origin')) !== -1) {
-        corsOptions = {origin: 'true'}
+        corsOptions = {origin: true}
     } else {
-        corsOptions = {origin: 'false'}
+        corsOptions = {origin: false}
     }
 
     callback(null, corsOptions);

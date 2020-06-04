@@ -133,10 +133,14 @@ favoriteRouter.route('/:dishId')
         if (favorite && favorite.dishes.indexOf(req.params.dishId) != -1) {
             favorite.dishes.splice(favorite.dishes.indexOf(req.params.dishId), 1);
             favorite.save((err, fav) => {
-                if (err) return next(err);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(fav);
+                Favorite.findById(fav._id)
+                .populate('dishes').then(favc => {
+                    if (err) return next(err);
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(favc);
+                    console.log(favc);
+                })
             });
         }
         else if (favorite) {

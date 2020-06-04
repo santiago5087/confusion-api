@@ -7,13 +7,14 @@ var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
 var config = require('./config');
 var FacebookTokenStrategy = require('passport-facebook-token');
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 exports.getToken = function(userId) {
-    return jwt.sign(userId, config.secretKey, {expiresIn: '2h'});
+    return jwt.sign(userId, config.secretKey, {expiresIn: '10h'});
 }
 
 var ops = {};
@@ -22,9 +23,10 @@ ops.secretOrKey = config.secretKey;
 
 exports.jwtPassport = passport.use(new JwtStrategy(ops, (jwt_payload, done) => {
     console.log('JWT payload: ', jwt_payload);
-    User.findById(jwt_payload.id)
+    User.findById(jwt_payload._id)
     .then((user) => {
         if (user) {
+            console.log("Usuario encontrado!")
             return done(null, user);
         } else {
             return done(null, false);
@@ -58,9 +60,36 @@ exports.verifyOwner = (req, res, next) => {
     .catch((err) => next(err));
 }
 
-exports.facebookPassport = passport.use(new FacebookTokenStrategy({
+exports.facebookTokenPassport = passport.use(new FacebookTokenStrategy({
     clientID: config.facebook.clientId,
     clientSecret: config.facebook.clientSecret
+}, (accessToken, refreshToken, profile, done) => {
+    User.findOne({facebookId: profile.id}, (err, user) => {
+        if (err) {
+            return done(err, false);
+        }
+        else if (!err && user) {
+            return done(null, user);
+        } else {
+            user = new User({username: profile.displayName});
+            user.facebookId = profile.id;
+            user.firstname = profile.name.givenName;
+            user.lastname = profile.name.familyName;
+            user.save((err, user) => {
+                if (err) {
+                    return done(err, false);
+                } else {
+                    return done(null, user);
+                }
+            });
+        }
+    });
+}));
+
+exports.facebookPassport = passport.use(new FacebookStrategy({
+    clientID: config.facebook.clientId,
+    clientSecret: config.facebook.clientSecret,
+    callbackURL: 'https://localhost:3443/users/auth/facebook/callback'
 }, (accessToken, refreshToken, profile, done) => {
     User.findOne({facebookId: profile.id}, (err, user) => {
         if (err) {
