@@ -5,7 +5,6 @@ var Comment = require('./models/comments').model;
 var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
-var config = require('./config');
 var FacebookTokenStrategy = require('passport-facebook-token');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
@@ -14,12 +13,12 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 exports.getToken = function(userId) {
-    return jwt.sign(userId, config.secretKey, {expiresIn: '10h'});
+    return jwt.sign(userId, process.env.SECRET_KEY, {expiresIn: '10h'});
 }
 
 var ops = {};
 ops.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-ops.secretOrKey = config.secretKey;
+ops.secretOrKey = process.env.SECRET_KEY;
 
 exports.jwtPassport = passport.use(new JwtStrategy(ops, (jwt_payload, done) => {
     console.log('JWT payload: ', jwt_payload);
@@ -61,8 +60,8 @@ exports.verifyOwner = (req, res, next) => {
 }
 
 exports.facebookTokenPassport = passport.use(new FacebookTokenStrategy({
-    clientID: config.facebook.clientId,
-    clientSecret: config.facebook.clientSecret
+    clientID: process.env.FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET
 }, (accessToken, refreshToken, profile, done) => {
     User.findOne({facebookId: profile.id}, (err, user) => {
         if (err) {
@@ -87,8 +86,8 @@ exports.facebookTokenPassport = passport.use(new FacebookTokenStrategy({
 }));
 
 exports.facebookPassport = passport.use(new FacebookStrategy({
-    clientID: config.facebook.clientId,
-    clientSecret: config.facebook.clientSecret,
+    clientID: process.env.FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     callbackURL: 'https://localhost:3443/users/auth/facebook/callback'
 }, (accessToken, refreshToken, profile, done) => {
     User.findOne({facebookId: profile.id}, (err, user) => {

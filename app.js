@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -8,9 +9,8 @@ var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var passport = require('passport');
 var authenticate = require('./authenticate');
-var config = require('./config');
 
-const url = config.mongoUrl;
+const url = process.env.MONGO_URI;
 
 mongoose.connect(url).then((db) => {
   console.log('Connected correctly to the server');
