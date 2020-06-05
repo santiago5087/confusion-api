@@ -7,6 +7,7 @@ var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
 var FacebookTokenStrategy = require('passport-facebook-token');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -88,7 +89,7 @@ exports.facebookTokenPassport = passport.use(new FacebookTokenStrategy({
 exports.facebookPassport = passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-    callbackURL: 'https://localhost:3443/users/auth/facebook/callback'
+    callbackURL: '/users/auth/facebook/callback'
 }, (accessToken, refreshToken, profile, done) => {
     User.findOne({facebookId: profile.id}, (err, user) => {
         if (err) {
@@ -110,4 +111,33 @@ exports.facebookPassport = passport.use(new FacebookStrategy({
             });
         }
     });
+}));
+
+exports.googlePassport = passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: '/users/auth/google/callback'
+}, (accessToken, refreshToken, profile, cb) => {
+    User.findOne({googleId: profile.id}, (err, user) => {
+        console.log(profile);
+        if (err) {
+            return cb(err, false);
+        }
+        else if (!err && user) {
+            return cb(null, user);
+        }
+        else {
+            user = new User({username: profile.displayName});
+            user.googleId = profile.id;
+            user.firstname = profile.name.givenName;
+            user.lastname = profile.name.familyName;
+            user.save((err, user) => {
+                if (err) {
+                    return cb(err, false);
+                } else {
+                    return cb(null, user);
+                }
+            });
+        }
+    })
 }));

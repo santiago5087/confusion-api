@@ -107,6 +107,24 @@ router.get('/auth/facebook/callback', cors.corsWithOptions, passport.authenticat
     res.status(200).send(responseHTML);
 });
 
+router.get('/auth/google', cors.corsWithOptions,
+  passport.authenticate('google', {scope: ['profile', 'email']} ));
+
+router.get('/auth/google/callback', cors.corsWithOptions, passport.authenticate('google'), 
+  function(req, res) {
+    var responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "http://localhost:4200");window.close();</script></html>';
+
+    var token = authenticate.getToken({_id: req.user._id});
+
+    responseHTML = responseHTML.replace('%value%', JSON.stringify({
+      success: true,  
+      token: token,
+      username: req.user.username,
+      status: "You are successfully logged in!"
+    }));
+    res.status(200).send(responseHTML);
+});
+
 router.get('/checkJWTToken', cors.corsWithOptions, (req, res, next) => {
   passport.authenticate('jwt', {session: false}, (err, user, info) => {
     if (err) return next(err);

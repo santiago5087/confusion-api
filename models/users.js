@@ -5,6 +5,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 //El plugin añade automáticamente los atributos username y password, también adiciona otros métodos
 var userSchema = new Schema({
     facebookId: String,
+    googleId: String,
     firstname: {
         type: String,
         default: ''
