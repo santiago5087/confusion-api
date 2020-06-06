@@ -90,7 +90,7 @@ router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res
 });
 
 router.get('/auth/facebook', cors.corsWithOptions,
-  passport.authenticate('facebook', {scope: ['public_profile, email']}));
+  passport.authenticate('facebook', {scope: ['email']} ));
 
 router.get('/auth/facebook/callback', cors.corsWithOptions, passport.authenticate('facebook'),
   function(req, res) {

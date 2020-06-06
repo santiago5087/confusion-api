@@ -65,6 +65,7 @@ exports.facebookTokenPassport = passport.use(new FacebookTokenStrategy({
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET
 }, (accessToken, refreshToken, profile, done) => {
     User.findOne({facebookId: profile.id}, (err, user) => {
+        console.log(profile);
         if (err) {
             return done(err, false);
         }
@@ -89,9 +90,11 @@ exports.facebookTokenPassport = passport.use(new FacebookTokenStrategy({
 exports.facebookPassport = passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    profileFields: ['id', 'emails', 'displayName'],
     callbackURL: '/users/auth/facebook/callback'
 }, (accessToken, refreshToken, profile, done) => {
     User.findOne({facebookId: profile.id}, (err, user) => {
+        console.log(profile);
         if (err) {
             return done(err, false);
         }
