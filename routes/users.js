@@ -29,7 +29,8 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   }
   User.register(user, req.body.password, (err, userR) => {
     if (err) {
-      err.status = 500;
+      res.statusCode = 401;
+      console.log(err);
       res.setHeader('Content-Type', 'application/json');
       res.json({err: err});
     } else {
