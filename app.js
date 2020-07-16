@@ -16,7 +16,6 @@ mongoose.connect(url).then((db) => {
   console.log('Connected correctly to the server');
 }, (err) => console.log(err));
 
-const indexRouter = require('./routes/index');
 const userRouter = require('./routes/users');
 const dishRouter = require('./routes/dishRouter');
 const promoRouter = require('./routes/promoRouter');
@@ -27,25 +26,11 @@ const feedbackRouter = require('./routes/feedbackRouter');
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//app.use(cookieParser('12345-67890-09876-54321')); //Clave con la que se cifra o firma la cookie
-
-/*
-app.use(session({
-  name: 'session-id',
-  secret: '12345-67890-09876-54321',
-  saveUninitialized: false,
-  resave: false,
-  store: new FileStore()
-}));
-*/
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.all('*', (req, res, next) => {
   if (req.secure) {
@@ -58,32 +43,16 @@ app.all('*', (req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', indexRouter);
 app.use('/users', userRouter);
-
-/*
-function auth(req, res, next) {
-
-  if (!req.user) {    //Para solo cookies:  !req.signedCookies.user, exp-sess: !req.session.user
-    var err = new Error('You aren\'t autheticated!');
-    err.status = 401;   //Unauthorized
-    next(err);
-  } else {
-    next();
-  }
-}
-
-app.use(auth);
-*/
-
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
 app.use('/imageUpload', uploadRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/feedback', feedbackRouter);
+app.get('*', (req, res) => {
+  return res.sendFile(path.join(__dirname, 'public/index.html'));
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
