@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   app.all('*', (req, res, next) => {
     if (req.secure) {
       return next();

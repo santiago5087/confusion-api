@@ -23,7 +23,7 @@ var server = http.createServer(app);
  * Create HTTP server.
  */
 
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   app.set('secPort', port+443);
   var options = {
     key: fs.readFileSync(__dirname + '/server.key'),
@@ -44,7 +44,9 @@ if (process.env.NODE_ENV == 'development') {
   
 }
 
-server.listen(port);
+server.listen(port, () => {
+  console.log('Server listening on port ', app.get('port'));
+});
 server.on('error', onError);
 server.on('listening', onListening);
 
