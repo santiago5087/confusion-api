@@ -95,7 +95,18 @@ router.get('/auth/facebook', cors.corsWithOptions,
 
 router.get('/auth/facebook/callback', cors.corsWithOptions, passport.authenticate('facebook'),
   function(req, res) {
-    var responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "http://localhost:4200");window.close();</script></html>';
+    var responseHTML = `
+    <html>
+      <head>
+        <title>Main</title>
+      </head>
+      <body></body>
+      <script>
+        res = %value%; 
+        window.opener.postMessage(res, '${process.env.HOST}');
+        window.close();
+      </script>
+    </html>`;
 
     var token = authenticate.getToken({_id: req.user._id});
 
@@ -113,7 +124,18 @@ router.get('/auth/google', cors.corsWithOptions,
 
 router.get('/auth/google/callback', cors.corsWithOptions, passport.authenticate('google'), 
   function(req, res) {
-    var responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "http://localhost:4200");window.close();</script></html>';
+    var responseHTML = `
+    <html>
+      <head>
+        <title>Main</title>
+      </head>
+      <body></body>
+      <script>
+        res = %value%; 
+        window.opener.postMessage(res, '${process.env.HOST}');
+        window.close();
+      </script>
+    </html>`;
 
     var token = authenticate.getToken({_id: req.user._id});
 
