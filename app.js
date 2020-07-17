@@ -26,6 +26,11 @@ const feedbackRouter = require('./routes/feedbackRouter');
 
 var app = express();
 
+/* En Herouku (nginx) req.connection.encrypted es siempre "undefined", así que node lo ve con este valor.
+Passport OAuth2 strategy usa req.connectio.encrypted para verificar si es una conección segura, por lo que
+hay que contarle a passport que confíe en un proxy si estás detrás de uno. 
+*/
+app.enable("trust proxy");
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
