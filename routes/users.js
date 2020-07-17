@@ -90,10 +90,10 @@ router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res
   }
 });
 
-router.get('/auth/facebook', cors.corsWithOptions,
+router.get('/auth/facebook', cors.cors,
   passport.authenticate('facebook', {scope: ['email']} ));
 
-router.get('/auth/facebook/callback', cors.corsWithOptions, passport.authenticate('facebook'),
+router.get('/auth/facebook/callback', cors.cors, passport.authenticate('facebook'),
   function(req, res) {
     var responseHTML = `
     <html>
@@ -119,10 +119,10 @@ router.get('/auth/facebook/callback', cors.corsWithOptions, passport.authenticat
     res.status(200).send(responseHTML);
 });
 
-router.get('/auth/google', cors.corsWithOptions,
+router.get('/auth/google', cors.cors,
   passport.authenticate('google', {scope: ['profile', 'email']} ));
 
-router.get('/auth/google/callback', cors.corsWithOptions, passport.authenticate('google'), 
+router.get('/auth/google/callback', cors.cors, passport.authenticate('google'), 
   function(req, res) {
     var responseHTML = `
     <html>
